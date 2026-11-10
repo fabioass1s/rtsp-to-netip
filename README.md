@@ -78,7 +78,7 @@ netip:
 
 cameras:
   - name: Entrada                 # via ONVIF (URLs RTSP e PTZ automáticos)
-    onvif: { host: 192.168.1.50, username: admin, password: "senha" }
+    onvif: { host: 192.168.1.50, port: 2020, username: admin, password: "senha" }
 
   - name: Garagem                 # via RTSP direto
     rtsp:
@@ -89,7 +89,7 @@ cameras:
 | Opção (câmera) | Padrão | Descrição |
 |---|---|---|
 | `rtsp.main` / `rtsp.sub` | — | URLs RTSP. Se informadas junto com `onvif`, têm prioridade, e o ONVIF passa a ser usado só para PTZ. |
-| `onvif.host/port/username/password` | porta 80 | Acesso ONVIF da câmera. |
+| `onvif.host/port/username/password` | porta 80 | Acesso ONVIF da câmera. A porta é a do ONVIF da câmera, não a porta NetIP: Tapo/Mercusys usam 2020, Hikvision/Dahua/Intelbras usam 80 e Xiongmai usa 8899. |
 | `onvif.main_profile` / `sub_profile` | 0 / 1 | Índice ou token do perfil ONVIF de cada stream. |
 | `port` | automática | Porta NetIP. Câmeras com a mesma porta viram canais de um só dispositivo. |
 | `audio` | `false` | Envia o áudio (convertido para G.711A). |

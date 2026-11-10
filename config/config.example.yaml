@@ -1,43 +1,48 @@
-# Copie este arquivo para config/config.yaml e ajuste.
+# Copie este arquivo para config/config.yaml e troque os dados marcados com <<<.
 
-log_level: INFO            # DEBUG mostra todas as mensagens NetIP recebidas
+log_level: INFO            # DEBUG mostra todas as mensagens NetIP (útil para diagnosticar o DVR/NVR)
 
 netip:
-  username: admin          # usuário/senha que a NVR/CMS vai usar para logar no conversor
+  username: admin          # usuário/senha que o DVR/NVR vai usar para logar no conversor
   password: ""
   base_port: 34567         # 1ª câmera = 34567, 2ª = 34568, ... (se a câmera não definir 'port')
-  discovery: true          # responde à busca automática das NVRs (requer network_mode: host)
-  advertise_ip: ""         # IP anunciado na busca; vazio = detecta automaticamente
-  idle_timeout: 20         # segundos que o RTSP fica aberto depois que o último cliente sai
+  discovery: true          # responde à busca automática do DVR/NVR (no Docker, requer network_mode: host)
+  # advertise_ip: 192.168.1.10   # Docker Desktop (Windows/Mac): IP do PC que roda o conversor
+  # idle_timeout: 20       # segundos que o RTSP fica aberto depois que o último cliente sai
   # device_type: IPC       # tipo informado no login (padrão: IPC para 1 canal, DVR para vários)
 
 cameras:
   # Câmera via ONVIF: o conversor descobre sozinho as URLs RTSP (principal e substream)
-  # e repassa os comandos PTZ da NVR para a câmera.
-  - name: Entrada
+  # e repassa os comandos PTZ do DVR/NVR para a câmera.
+  # Dica: veja no DVR a tela "status do canal" (resolução máxima). Se a câmera mandar mais
+  # que isso (ex.: 3 MP num DVR de 1080P), reduza o stream principal da câmera para 1080p.
+  - name: Rua                          # nome que aparece no DVR
     onvif:
-      host: 192.168.1.50
-      port: 80
-      username: admin
-      password: "senha"
-      # main_profile: 0      # índice ou token do perfil ONVIF do stream principal
-      # sub_profile: 1       # idem para o substream (null = não usar substream)
-    audio: false             # true = envia o áudio convertido para G.711A
+      host: 192.168.1.100              # <<< IP da câmera
+      port: 2020                       # porta ONVIF da CÂMERA (não é a porta NetIP 34567+):
+                                       # Tapo/Mercusys = 2020 | Hikvision/Dahua/Intelbras = 80 | Xiongmai = 8899
+      username: usuario_da_camera      # <<< usuário da câmera (Tapo/Mercusys: a "conta da câmera" criada no app)
+      password: "senha_da_camera"      # <<< senha da câmera (aqui o @ e outros caracteres vão normais)
+      # main_profile: 0                # índice ou token do perfil ONVIF do stream principal
+      # sub_profile: 1                 # idem para o substream (null = não usar substream)
+    audio: true                        # envia o áudio da câmera (convertido para G.711A se preciso)
 
-  # Câmera via RTSP direto (senha com caracteres especiais deve ir codificada: @ -> %40)
-  - name: Garagem
-    rtsp:
-      main: rtsp://admin:senha@192.168.1.51:554/cam/realmonitor?channel=1&subtype=0
-      sub: rtsp://admin:senha@192.168.1.51:554/cam/realmonitor?channel=1&subtype=1
-    # rtsp_transport: tcp    # tcp (padrão), udp, http ou auto
-    # fps: 15                # força o FPS informado à NVR (padrão: detectado do stream)
-    # always_on: false       # true = mantém o RTSP principal sempre conectado
+  # --- Outros exemplos: tire o # para usar ------------------------------------
+
+  # Câmera via RTSP direto (na URL RTSP a senha vai codificada: @ -> %40, # -> %23)
+  # - name: Garagem
+  #   rtsp:
+  #     main: rtsp://admin:senha@192.168.1.101:554/cam/realmonitor?channel=1&subtype=0
+  #     sub: rtsp://admin:senha@192.168.1.101:554/cam/realmonitor?channel=1&subtype=1
+  #   # rtsp_transport: tcp    # tcp (padrão), udp, http ou auto
+  #   # fps: 15                # força o FPS informado ao DVR (padrão: detectado do stream)
+  #   # always_on: false       # true = mantém o RTSP principal sempre conectado
 
   # RTSP para vídeo + ONVIF só para PTZ
   # - name: Speed Dome
   #   rtsp:
-  #     main: rtsp://admin:senha@192.168.1.52:554/Streaming/Channels/101
-  #   onvif: { host: 192.168.1.52, username: admin, password: "senha" }
+  #     main: rtsp://admin:senha@192.168.1.102:554/Streaming/Channels/101
+  #   onvif: { host: 192.168.1.102, port: 80, username: admin, password: "senha" }
 
   # Duas câmeras na MESMA porta = um único dispositivo NetIP com 2 canais (estilo DVR)
   # - name: Corredor 1
