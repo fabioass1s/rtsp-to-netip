@@ -1,0 +1,48 @@
+# Copie este arquivo para config/config.yaml e ajuste.
+
+log_level: INFO            # DEBUG mostra todas as mensagens NetIP recebidas
+
+netip:
+  username: admin          # usuário/senha que a NVR/CMS vai usar para logar no conversor
+  password: ""
+  base_port: 34567         # 1ª câmera = 34567, 2ª = 34568, ... (se a câmera não definir 'port')
+  discovery: true          # responde à busca automática das NVRs (requer network_mode: host)
+  advertise_ip: ""         # IP anunciado na busca; vazio = detecta automaticamente
+  idle_timeout: 20         # segundos que o RTSP fica aberto depois que o último cliente sai
+  # device_type: IPC       # tipo informado no login (padrão: IPC para 1 canal, DVR para vários)
+
+cameras:
+  # Câmera via ONVIF: o conversor descobre sozinho as URLs RTSP (principal e substream)
+  # e repassa os comandos PTZ da NVR para a câmera.
+  - name: Entrada
+    onvif:
+      host: 192.168.1.50
+      port: 80
+      username: admin
+      password: "senha"
+      # main_profile: 0      # índice ou token do perfil ONVIF do stream principal
+      # sub_profile: 1       # idem para o substream (null = não usar substream)
+    audio: false             # true = envia o áudio convertido para G.711A
+
+  # Câmera via RTSP direto (senha com caracteres especiais deve ir codificada: @ -> %40)
+  - name: Garagem
+    rtsp:
+      main: rtsp://admin:senha@192.168.1.51:554/cam/realmonitor?channel=1&subtype=0
+      sub: rtsp://admin:senha@192.168.1.51:554/cam/realmonitor?channel=1&subtype=1
+    # rtsp_transport: tcp    # tcp (padrão), udp, http ou auto
+    # fps: 15                # força o FPS informado à NVR (padrão: detectado do stream)
+    # always_on: false       # true = mantém o RTSP principal sempre conectado
+
+  # RTSP para vídeo + ONVIF só para PTZ
+  # - name: Speed Dome
+  #   rtsp:
+  #     main: rtsp://admin:senha@192.168.1.52:554/Streaming/Channels/101
+  #   onvif: { host: 192.168.1.52, username: admin, password: "senha" }
+
+  # Duas câmeras na MESMA porta = um único dispositivo NetIP com 2 canais (estilo DVR)
+  # - name: Corredor 1
+  #   port: 34600
+  #   rtsp: rtsp://...
+  # - name: Corredor 2
+  #   port: 34600
+  #   rtsp: rtsp://...

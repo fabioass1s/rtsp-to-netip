@@ -1,0 +1,23 @@
+# Teste ponta a ponta:  câmera RTSP falsa -> conversor -> clientes NetIP
+#   docker compose -f tests/e2e/docker-compose.e2e.yml up -d --build
+#   (veja os comandos de verificação no README)
+name: netip-e2e
+
+services:
+  camera:
+    image: bluenviron/mediamtx:latest-ffmpeg
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
+
+  bridge:
+    build: ../..
+    image: netip-bridge:latest
+    depends_on: [camera]
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    depends_on: [bridge]
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro

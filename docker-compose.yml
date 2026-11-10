@@ -1,0 +1,20 @@
+services:
+  netip-bridge:
+    build: .
+    image: netip-bridge:latest
+    container_name: netip-bridge
+    restart: unless-stopped
+    environment:
+      TZ: America/Sao_Paulo
+      # LOG_LEVEL: DEBUG
+    volumes:
+      - ./config:/config:ro
+
+    # Em servidor Linux, prefira a rede do host: habilita a busca automática da NVR
+    # (broadcast UDP 34569) e o comando "discover" de câmeras ONVIF.
+    # Para isso, descomente a linha abaixo e remova o bloco "ports".
+    # network_mode: host
+
+    ports:
+      - "34567-34576:34567-34576/tcp"   # uma porta por câmera virtual (ajuste se tiver mais de 10)
+      - "34569:34569/udp"

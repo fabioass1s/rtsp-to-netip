@@ -1,0 +1,5 @@
+# go2rtc consome o conversor como se fosse uma câmera Xiongmai real (cliente DVRIP independente).
+streams:
+  netip_main: dvrip://admin:teste123@bridge:34567?channel=0&subtype=0
+  netip_sub: dvrip://admin:teste123@bridge:34567?channel=0&subtype=1
+  netip_hevc: dvrip://admin:teste123@bridge:34568?channel=0&subtype=0

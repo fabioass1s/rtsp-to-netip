@@ -1,0 +1,15 @@
+# Configuração real (senhas e IPs das câmeras): nunca versionar.
+# Use config/config.example.yaml como modelo.
+config/config.yaml
+logs/
+
+.venv/
+__pycache__/
+*.pyc
+
+# capturas de teste
+test-output/
+*.h264
+*.h265
+*.alaw
+*.jpg

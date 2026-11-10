@@ -1,0 +1,16 @@
+log_level: DEBUG
+
+netip:
+  username: admin
+  password: teste123
+  discovery: false
+
+cameras:
+  - name: H264
+    rtsp:
+      main: rtsp://camera:8554/main
+      sub: rtsp://camera:8554/sub
+    audio: true
+
+  - name: H265
+    rtsp: rtsp://camera:8554/hevc

@@ -1,0 +1,10 @@
+.git
+**/__pycache__
+**/*.pyc
+config/
+test-output/
+*.h264
+*.h265
+*.jpg
+.venv
+logs/
